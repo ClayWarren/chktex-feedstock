@@ -52,6 +52,12 @@ requirements:
   host:
     - ${{ posix_prefix }}ncurses
     - ${{ posix_prefix }}perl
+  run:
+    # deweb and chkweb are perl scripts, so perl is needed at run time. On
+    # unix this has been satisfied by the system perl their shebang points
+    # at; Windows has none, so the interpreter must ship with the package.
+    - if: win
+      then: m2-perl
 
 tests:
   - script:
