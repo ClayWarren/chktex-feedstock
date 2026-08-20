@@ -19,9 +19,7 @@ source:
   sha256: cea81a1cde2f151db2b5d2adf2271becfd3c0c1f40eca5cf45b52beeb4a636f9
 
 build:
-  # TODO: see https://github.com/conda-forge/chktex-feedstock/issues/9
-  skip: win
-  number: 0
+  number: 1
   script:
     file: build-chktex
   dynamic_linking:

@@ -10,6 +10,13 @@ cp COPYING "${SRC_DIR}/COPYING" || echo "COPYING already correct"
 
 if [[ "${target_platform}" == "win-64" ]]; then
     ln -s "${PREFIX}/Library/usr/bin/perl.exe" "${PREFIX}/Library/usr/bin/perl5.exe"
+    # configure.ac hard-errors when it cannot link tgetent, but nothing ever
+    # uses it: the termcap code in OpSys.c is gated on HAVE_LIBTERMCAP /
+    # HAVE_LIBTERMLIB, and AC_SEARCH_LIBS defines neither (config.h.in has no
+    # HAVE_LIB* entries at all), so USE_TERMCAP is never enabled on any
+    # platform. conda-forge has no mingw-w64 termcap or ncurses to link
+    # against, so short-circuit the probe via its autoconf cache variable.
+    export ac_cv_search_tgetent="none required"
 else
     ln -s "${PREFIX}/bin/perl" "${PREFIX}/bin/perl5"
     export CFLAGS="${CFLAGS} -I${PREFIX}/include -I${PREFIX}/include/ncurses -I${PREFIX}/include/ncursesw"
