@@ -58,6 +58,11 @@ make all
 
 make install
 
+if [[ "${target_platform}" == "win-arm64" ]]; then
+    # This makefile hardcodes chktex without EXEEXT; Clang honors that spelling.
+    mv "${PREFIX}/bin/chktex" "${PREFIX}/bin/chktex.exe"
+fi
+
 sed --in-place "s/perl5/perl/" "${PREFIX}/bin/deweb"
 
 if [[ "${target_platform}" == win-* ]]; then

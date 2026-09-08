@@ -12,6 +12,7 @@ my $platform = $ARGV[0] // die "Target platform is required\n";
 my $windows = $platform =~ /^win-/;
 my $prefix = $ENV{PREFIX} or die "PREFIX is required\n";
 my $exe = File::Spec->catfile($prefix, 'bin', 'chktex' . ($windows ? '.exe' : ''));
+-f $exe or die "Installed executable missing: $exe\n";
 my $resource = File::Spec->catfile($prefix, 'etc', 'chktexrc');
 -f $resource or die "Installed resource file missing: $resource\n";
 my $scratch = tempdir('chktex tests XXXXX', DIR => getcwd(), CLEANUP => 1);
