@@ -70,7 +70,7 @@ tests:
       run:
         - ${{ posix_prefix }}perl
     script:
-      - perl test_behavior.pl
+      - perl test_behavior.pl ${{ target_platform }}
   - script:
       - chktex --version
       - deweb --version

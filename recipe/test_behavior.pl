@@ -8,7 +8,8 @@ use File::Temp qw(tempdir);
 use IPC::Open3;
 use Symbol qw(gensym);
 
-my $windows = $^O eq 'MSWin32' || $^O eq 'msys';
+my $platform = $ARGV[0] // die "Target platform is required\n";
+my $windows = $platform =~ /^win-/;
 my $prefix = $ENV{PREFIX} or die "PREFIX is required\n";
 my $exe = File::Spec->catfile($prefix, 'bin', 'chktex' . ($windows ? '.exe' : ''));
 my $resource = File::Spec->catfile($prefix, 'etc', 'chktexrc');
@@ -55,9 +56,10 @@ if ($windows) {
     read($binary, my $pe, 6) == 6 or die "Short PE header\n";
     substr($pe, 0, 4) eq "PE\0\0" or die "Invalid PE header\n";
     my $machine = unpack('v', substr($pe, 4, 2));
-    $machine == 0x8664 or die sprintf("Expected x64, got 0x%x\n", $machine);
+    my $expected = $platform eq 'win-arm64' ? 0xaa64 : 0x8664;
+    $machine == $expected or die sprintf("Expected 0x%x, got 0x%x\n", $expected, $machine);
     close $binary;
-    print "Installed executable PE machine: 0x8664\n";
+    printf "Installed executable PE machine: 0x%04x\n", $machine;
 
     my $relocated = File::Spec->catdir($scratch, 'relocated prefix');
     make_path("$relocated/bin", "$relocated/etc");
