@@ -17,6 +17,9 @@ source:
     - https://download.savannah.gnu.org/releases/chktex/chktex-${{ version }}.tar.gz
     - https://www.mirrorservice.org/sites/download.savannah.gnu.org/releases/chktex/chktex-${{ version }}.tar.gz
   sha256: cea81a1cde2f151db2b5d2adf2271becfd3c0c1f40eca5cf45b52beeb4a636f9
+  patches:
+    - if: win
+      then: 0001-relocatable-windows-resource.patch
 
 build:
   number: 1
@@ -60,6 +63,14 @@ requirements:
       then: m2-perl
 
 tests:
+  - files:
+      recipe:
+        - test_behavior.pl
+    requirements:
+      run:
+        - ${{ posix_prefix }}perl
+    script:
+      - perl test_behavior.pl
   - script:
       - chktex --version
       - deweb --version

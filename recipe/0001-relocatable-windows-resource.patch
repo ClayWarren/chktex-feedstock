@@ -1,0 +1,39 @@
+--- a/OpSys.c
++++ b/OpSys.c
+@@ -36,6 +36,10 @@
+ #include "ChkTeX.h"
+ #include "OpSys.h"
+ #include "Utility.h"
++
++#ifdef _WIN32
++#  include <windows.h>
++#endif
+ 
+ #ifdef KPATHSEA
+ #include <kpathsea/variable.h>
+@@ -265,7 +269,24 @@
+             else
+                 *ConfigFile = 0;
+ #else /* TEX_LIVE */
+-#if defined(__unix__) || defined(__MSDOS__)
++#ifdef _WIN32
++            /* The installed binary is in <prefix>/bin.  Resolve the resource
++             * relative to it, independently of the build prefix and cwd. */
++            {
++                DWORD length = GetModuleFileNameA(NULL, ConfigFile,
++                                                  sizeof(ConfigFile));
++                char *separator;
++                const char suffix[] = "..\\etc\\" RCBASENAME;
++                if (length == 0 || length >= sizeof(ConfigFile))
++                    *ConfigFile = 0;
++                else if ((separator = strrchr(ConfigFile, '\\')) &&
++                         (size_t)(separator + 1 - ConfigFile) + sizeof(suffix)
++                             <= sizeof(ConfigFile))
++                    strcpy(separator + 1, suffix);
++                else
++                    *ConfigFile = 0;
++            }
++#elif defined(__unix__) || defined(__MSDOS__)
+             strcpy(ConfigFile, SYSCONFDIR);
+             tackon(ConfigFile, RCBASENAME);
+ #else
