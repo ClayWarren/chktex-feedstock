@@ -60,6 +60,8 @@ requirements:
         - m2-automake${{ am_version }}
         - m2-base
   host:
+    - if: target_platform == "win-arm64"
+      then: getopt-win32
     - ${{ posix_prefix }}ncurses
     - ${{ posix_prefix }}perl
   run:
