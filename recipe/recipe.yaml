@@ -47,9 +47,16 @@ requirements:
         - gettext
         - gnuconfig
       else:
-        - ${{ compiler("m2w64_c") }}
-        - ${{ compiler("m2w64_cxx") }}
-        - ${{ stdlib("m2w64_c") }}
+        - if: target_platform == "win-arm64"
+          then:
+            - ${{ compiler("c") }}
+            - ${{ stdlib("c") }}
+            - clang
+            - lld
+          else:
+            - ${{ compiler("m2w64_c") }}
+            - ${{ compiler("m2w64_cxx") }}
+            - ${{ stdlib("m2w64_c") }}
         - m2-automake${{ am_version }}
         - m2-base
   host:
@@ -70,7 +77,7 @@ tests:
       run:
         - ${{ posix_prefix }}perl
     script:
-      - perl test_behavior.pl
+      - perl test_behavior.pl ${{ target_platform }}
   - script:
       - chktex --version
       - deweb --version
