@@ -20,6 +20,8 @@ source:
   patches:
     - if: win
       then: 0001-relocatable-windows-resource.patch
+    - if: target_platform == "win-arm64"
+      then: 0002-msvc-crt-headers.patch
 
 build:
   number: 1

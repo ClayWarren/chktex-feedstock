@@ -21,10 +21,10 @@ $ENV{XDG_CONFIG_HOME} = $scratch;
 delete @ENV{qw(CHKTEXRC CHKTEX_HOME LOGDIR)};
 
 sub run_checker {
-    my ($program, $input) = @_;
+    my ($program, $input, @files) = @_;
     my $stderr = gensym;
     my $pid = open3(my $stdin, my $stdout, $stderr,
-        $program, '-q', '-nall', '-w1', '-f', "%n:%l:%c:%m\n");
+        $program, '-q', '-nall', '-w1', '-f', "%n:%l:%c:%m\n", @files);
     print {$stdin} $input;
     close $stdin;
     my $out = do { local $/; <$stdout> } // '';
@@ -44,6 +44,14 @@ sub check_behavior {
     ($status, $out, $err) = run_checker($program, "\\LaTeX is fine.\n");
     $status == 2 && $out eq "1:1:7:Command terminated with space.\n" && $err eq ''
         or die "Known warning fixture failed: $status [$out] [$err]\n";
+    make_path('docs');
+    open my $document, '>', 'docs/input.tex' or die $!;
+    print {$document} "\\LaTeX is fine.\n";
+    close $document or die $!;
+    ($status, $out, $err) = run_checker($program, '', 'docs/input.tex');
+    $status == 2 && $out eq "1:1:7:Command terminated with space.\n" && $err eq ''
+        or die "Relative document path failed: $status [$out] [$err]\n";
+    print "Relative document path and exact diagnostic passed\n";
     print "Clean input, resource-defined silent command, and exact warning/exit status passed: $program\n";
 }
 

@@ -1,0 +1,14 @@
+--- a/chktex-1.7.10/ChkTeX.h
++++ b/chktex-1.7.10/ChkTeX.h
+@@ -46,6 +46,11 @@
+ #include <ctype.h>
+ #include <math.h>
+ #include <stdio.h>
++
++#ifdef _MSC_VER
++#  include <direct.h>
++#  include <io.h>
++#endif
+ 
+ #ifdef HAVE_STDARG_H
+ #  include <stdarg.h>

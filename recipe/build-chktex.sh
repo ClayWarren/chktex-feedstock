@@ -37,7 +37,7 @@ if [[ "${target_platform}" == "win-arm64" ]]; then
     export CFLAGS="${CFLAGS:-} -I${LIBRARY_PREFIX_M}/include -O2 -D_CRT_SECURE_NO_WARNINGS -D_MT -D_DLL -nostdlib -Xclang --dependent-lib=msvcrt -fuse-ld=lld"
     export LDFLAGS="${LDFLAGS:-} -L${LIBRARY_PREFIX_M}/lib -nostdlib -Xclang --dependent-lib=msvcrt -fuse-ld=lld"
     # Autoconf probes stdio symbols without including the modern inline headers.
-    export LIBS="-lgetopt -llegacy_stdio_definitions"
+    export LIBS="-lgetopt -llegacy_stdio_definitions -loldnames"
     configure_platform=(--build=aarch64-w64-mingw32 --host=aarch64-w64-mingw32)
 fi
 
