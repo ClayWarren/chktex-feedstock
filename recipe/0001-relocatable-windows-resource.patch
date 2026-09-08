@@ -1,5 +1,5 @@
---- a/OpSys.c
-+++ b/OpSys.c
+--- a/chktex-1.7.10/OpSys.c
++++ b/chktex-1.7.10/OpSys.c
 @@ -36,6 +36,10 @@
  #include "ChkTeX.h"
  #include "OpSys.h"
